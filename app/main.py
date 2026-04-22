@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.database import close_db, connect_db
-from app.routers import router
+from app.routes import router
 
 
 logging.basicConfig(
