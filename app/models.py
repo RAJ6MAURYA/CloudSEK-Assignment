@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 
+from urllib.parse import urlparse
 
 # --- Request Models ---
 
@@ -19,6 +20,24 @@ class MetadataRecord(BaseModel):
     page_source: str
     collected_at: datetime
     status_code: int
+
+    @field_validator('url')
+    @classmethod
+    def extension_validator(cls,url):
+        url = str(url)
+        res = urlparse(url)
+        print(res)
+        # wiki/India
+        #ParseResult(scheme='https', netloc='en.wikipedia.org', path='/wiki/India', params='', query='', fragment='')
+        files = res.path
+        if "." in files:
+            extension = files.split(".")[-1]
+            print(extension)
+            if extension:
+                if extension not in ["txt","json"]:
+                    raise ValueError("invalid File")
+        return url
+        
 
 # --- Response Models  --- 
 
