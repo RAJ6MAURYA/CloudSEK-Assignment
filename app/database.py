@@ -53,3 +53,10 @@ def upsert_metadata(record: MetadataRecord) -> None:
         upsert=True,
     )
     logger.info("Upserted metadata for %s", record.url)
+
+def delete_metadata(url : str):
+     db = get_db()
+     db.metadata.delete_one(
+        {"url":url}
+     )
+
