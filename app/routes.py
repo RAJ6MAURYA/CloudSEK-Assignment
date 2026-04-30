@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import HttpUrl
 
-from app.database import find_metadata_by_url, upsert_metadata
+from app.database import find_metadata_by_url, upsert_metadata, delete_metadata
 from app.models import (
     AcceptedResponse,
     ErrorResponse,
@@ -83,4 +83,15 @@ async def get_metadata(url: HttpUrl = Query(..., description="The URL to look up
     return JSONResponse(
         status_code=202,
         content=AcceptedResponse(url=url_str).model_dump(),
+    )
+
+@router.delete("/del")
+async def delete_metadata_route(body: URLRequest):
+    url = str(body.url)
+    print(url,type(url))
+    await asyncio.to_thread(delete_metadata,url)
+
+    return JSONResponse(
+        status_code=202,
+        content=AcceptedResponse(url=url).model_dump(),
     )
